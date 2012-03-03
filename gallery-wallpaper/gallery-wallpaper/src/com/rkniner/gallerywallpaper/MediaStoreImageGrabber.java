@@ -51,32 +51,31 @@ public class MediaStoreImageGrabber implements ImageGrabber {
 	private void rebuildQuery() {
 		if (this.useSources) {
 			StringBuilder whereClause = new StringBuilder();
+			String[] source = null;
 			if (sources != null && sources.length > 0) {
+				source = new String[sources.length];
+				source[0] = sources[0].toString().replace("\\", "\\\\")
+						.replace("%", "\\%") + "%";
 				whereClause = whereClause.append(MediaStore.Images.ImageColumns.DATA)
-					.append(" LIKE '").append(
-								sources[0].toString().replace("\\", "\\\\")
-								.replace("%", "\\%").replace("_", "\\_"))
-					.append("%' ESCAPE '\\'");
+					.append(" LIKE ? ESCAPE '\\'");
 				for (int i = 0; i < sources.length; i++) {
+					source[i] = sources[i].toString().replace("\\", "\\\\")
+							.replace("%", "\\%") + "%";
 					whereClause = whereClause.append(" OR ").append(MediaStore.Images.ImageColumns.DATA)
-					.append(" LIKE '").append(
-								sources[0].toString().replace("\\", "\\\\")
-								.replace("%", "\\%").replace("_", "\\_"))
-					.append("%' ESCAPE '\\'");
-					
+					.append(" LIKE ? ESCAPE '\\'");
 				}
 			}
 			cursorExternal = context.getContentResolver().query(
 					MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
 					new String[] {MediaStore.Images.ImageColumns._ID},
 					whereClause.toString(),
-					(String[])null,
+					source,
 					MediaStore.Images.ImageColumns._ID + " ASC");
 			cursorInternal = context.getContentResolver().query(
 					MediaStore.Images.Media.INTERNAL_CONTENT_URI,
 					new String[] {MediaStore.Images.ImageColumns._ID},
 					whereClause.toString(),
-					(String[])null,
+					source,
 					MediaStore.Images.ImageColumns._ID + " ASC");
 		} else {
 			cursorExternal = null;

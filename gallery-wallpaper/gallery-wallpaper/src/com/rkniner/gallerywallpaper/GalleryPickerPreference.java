@@ -70,11 +70,13 @@ public class GalleryPickerPreference extends DialogPreference {
 		private TableLayout t;
 		private Context c;
 		private Handler h;
+		private int mode = 0;
 		
-		public ViewLoader(TableLayout view, Context context, Handler handler) {
+		public ViewLoader(TableLayout view, Context context, Handler handler, int thismode) {
 			t = view;
 			c = context;
 			h = handler;
+			mode = thismode;
 		}
 		
 		private TableRow newEntry(String value, String[] valuesSelected, String id) {
@@ -121,7 +123,7 @@ public class GalleryPickerPreference extends DialogPreference {
 					projection,
 					"", (String[])null, MediaStore.Images.ImageColumns.DATA + " ASC");
 			switch (mode) {
-			case MODE_IMAGES:
+			case GalleryPickerPreference.MODE_IMAGES:
 				String images = GalleryPickerPreference.this.getPreferenceManager().getSharedPreferences()
 					.getString(
 						GalleryWallpaper.SHARED_PREFS_IMAGELIST,
@@ -137,7 +139,7 @@ public class GalleryPickerPreference extends DialogPreference {
 					}
 				}
 				break;
-			case MODE_DIRS:
+			case GalleryPickerPreference.MODE_DIRS:
 				String dirs = GalleryPickerPreference.this.getPreferenceManager().getSharedPreferences().getString(
 						GalleryWallpaper.SHARED_PREFS_IMAGEDIRS,
 						GalleryWallpaper.SHARED_PREFS_IMAGEDIRS_DEFAULT);
@@ -170,13 +172,13 @@ public class GalleryPickerPreference extends DialogPreference {
 
 	public GalleryPickerPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		this.mode = attrs.getAttributeListValue("http://schemas.android.com/apk/res/com.rkniner.gallerywall", MODE_ATTRIBUTE, MODES, DEFAULT_MODE);
+		this.mode = attrs.getAttributeListValue("http://schemas.android.com/apk/res/com.rkniner.gallerywallpaper", MODE_ATTRIBUTE, MODES, DEFAULT_MODE);
 		this.setDialogLayoutResource(R.layout.picker);
 	}
 
 	public GalleryPickerPreference(Context context, AttributeSet attrs, int style) {
 		super(context, attrs, style);
-		this.mode = attrs.getAttributeListValue("http://schemas.android.com/apk/res/com.rkniner.gallerywall", MODE_ATTRIBUTE, MODES, DEFAULT_MODE);
+		this.mode = attrs.getAttributeListValue("http://schemas.android.com/apk/res/com.rkniner.gallerywallpaper", MODE_ATTRIBUTE, MODES, DEFAULT_MODE);
 		this.setDialogLayoutResource(R.layout.picker);
 	}
 
@@ -184,7 +186,7 @@ public class GalleryPickerPreference extends DialogPreference {
 	@Override
 	public void onBindDialogView(View v) {
 		TableLayout t = (TableLayout)v.findViewById(R.id.table);
-		ViewLoader vl = new ViewLoader(t, this.getContext(), this.handler);
+		ViewLoader vl = new ViewLoader(t, this.getContext(), this.handler, this.mode);
 		handler.post(vl);
 	}
 	

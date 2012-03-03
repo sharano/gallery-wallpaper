@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Copyright (c) 2012 Richard K Niner
+	
+	This file is part of Gallery Wallpaper.
+	
+	Gallery Wallpaper is a free software: you can redistribute it and/or
+	modify it under the terms of the GNU General Public License as
+	published by the Free Software Foundation, either version 2 of the
+	License, or (at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<resources>
+    <string-array name="imagesearch_names">
+        <item >Use Image List</item>
+        <item >Use Folder(s)</item>
+    </string-array>
+    <string-array name="imagesearch_values">
+        <item >imageList</item>
+        <item >imageDirs</item>
+    </string-array>
+    <string-array name="replaceimage_names">
+        <item >1 minute</item>
+        <item >5 minutes</item>
+        <item >10 minutes</item>
+        <item >15 minutes</item>
+        <item >30 minutes</item>
+    </string-array>
+    <string-array name="replaceimage_values">
+        <item >60000000</item>
+        <item >300000000</item>
+        <item >600000000</item>
+        <item >900000000</item>
+        <item >1800000000</item>
+    </string-array>
+    <string-array name="sync_names">
+        <item >15 minutes</item>
+        <item >30 minutes</item>
+        <item >1 hour</item>
+        <item >3 hours</item>
+        <item >6 hours</item>
+    </string-array>
+    <string-array name="sync_values">
+        <item >900000000</item>
+        <item >1800000000</item>
+        <item >3600000000</item>
+        <item >10800000000</item>
+        <item >21600000000</item>
+    </string-array>
+
+    
+</resources>

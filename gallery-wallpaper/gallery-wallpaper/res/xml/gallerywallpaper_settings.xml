@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Copyright (c) 2012 Richard K Niner
+	
+	This file is part of Gallery Wallpaper.
+	
+	Gallery Wallpaper is a free software: you can redistribute it and/or
+	modify it under the terms of the GNU General Public License as
+	published by the Free Software Foundation, either version 2 of the
+	License, or (at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:gw="http://schemas.android.com/apk/res/com.rkniner.gallerywallpaper"
+	android:title="@string/preferences">
+
+	<PreferenceCategory android:title="@string/imagesource_category">
+		<ListPreference android:entries="@array/imagesearch_names"
+			android:title="@string/imagesearch_title"
+			android:entryValues="@array/imagesearch_values"
+			android:dialogTitle="@string/imagesearch_title"
+			android:key="@string/imagesearch_key"
+			android:enabled="true"
+			android:summary="@string/imagesearch_summary"
+			android:defaultValue="@string/imagesearch_default"
+			/>
+		<com.rkniner.gallerywallpaper.GalleryPickerPreference android:key="@string/imagelist_key"
+			android:title="@string/imagelist_title"
+			android:summary="@string/imagelist_summary"
+			android:enabled="false"
+			gw:pickerMode="images"
+			/>
+		<com.rkniner.gallerywallpaper.GalleryPickerPreference android:key="@string/imagedirs_key"
+			android:title="@string/imagedirs_title"
+			android:summary="@string/imagedirs_summary"
+			android:enabled="false"
+			gw:pickerMode="dirs"
+			/>
+	</PreferenceCategory>
+	<PreferenceCategory android:title="@string/timer_category">
+		<ListPreference android:entries="@array/replaceimage_names"
+			android:title="@string/replaceimage_title"
+			android:summary="@string/replaceimage_summary"
+			android:entryValues="@array/replaceimage_values"
+			android:key="@string/replaceimage_key"
+			android:defaultValue="@string/replaceimage_default"
+			/>
+		<ListPreference android:entries="@array/sync_names"
+		    android:title="@string/sync_title"
+		    android:summary="@string/sync_summary"
+		    android:entryValues="@array/sync_values"
+		    android:key="@string/sync_key"
+		    android:defaultValue="@string/sync_default"
+		    />
+	</PreferenceCategory>
+</PreferenceScreen>

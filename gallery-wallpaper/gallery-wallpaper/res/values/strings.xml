@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Copyright (c) 2012 Richard K Niner
+	
+	This file is part of Gallery Wallpaper.
+	
+	Gallery Wallpaper is a free software: you can redistribute it and/or
+	modify it under the terms of the GNU General Public License as
+	published by the Free Software Foundation, either version 2 of the
+	License, or (at your option) any later version.
+	
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -->
+<resources>
+	<string name="app_name">Gallery Wallpaper Slideshow</string>
+	<string name="wallpaper">Gallery Wallpaper</string>
+	<string name="wallpaper_settings">Gallery Wallpaper Settings</string>
+	
+	<string name="preferences">Wallpaper Settings</string>
+	
+	<string name="imagesource_category">Image source</string>
+	
+	<string name="imagesearch_title">Select by</string>
+	<string name="imagesearch_key">imageSearch</string>
+	<string name="imagesearch_summary">Pick how you want to find images</string>
+	<string name="imagesearch_default">imageDirs</string>
+	
+	<string name="imagelist_title">Build Image List</string>
+	<string name="imagelist_key">imageList</string>
+	<string name="imagelist_summary">Find images to use in wallpaper</string>
+	
+	<string name="imagedirs_title">Image Folders</string>
+	<string name="imagedirs_key">imageDirs</string>
+	<string name="imagedirs_summary">Select folders/albums to use in wallpaper</string>
+	
+	<string name="timer_category">Time intervals</string>
+	
+	<string name="replaceimage_title">Update Interval</string>
+	<string name="replaceimage_key">replaceImage</string>
+	<string name="replaceimage_summary">Interval between image updates</string>
+	<string name="replaceimage_default">300000000</string>
+	
+	<string name="sync_title">Re-sync Interval</string>
+	<string name="sync_key">sync</string>
+	<string name="sync_summary">Time between database updates</string>
+	<string name="sync_default">10800000</string>
+</resources>

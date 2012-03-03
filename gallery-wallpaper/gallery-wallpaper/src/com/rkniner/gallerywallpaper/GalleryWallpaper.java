@@ -53,9 +53,9 @@ public class GalleryWallpaper extends WallpaperService {
 	public static final String SHARED_PREFS_IMAGEDIRS_DEFAULT = "";
 
 	public static final String SHARED_PREFS_REPLACEIMAGE = "replaceImage";
-	public static final String SHARED_PREFS_REPLACEIMAGE_DEFAULT = "300000";
+	public static final String SHARED_PREFS_REPLACEIMAGE_DEFAULT = "300000000";
 	public static final String SHARED_PREFS_SYNC = "sync";
-	public static final String SHARED_PREFS_SYNC_DEFAULT = "10800000";
+	public static final String SHARED_PREFS_SYNC_DEFAULT = "10800000000";
 	
 	@Override
 	public WallpaperService.Engine onCreateEngine() {

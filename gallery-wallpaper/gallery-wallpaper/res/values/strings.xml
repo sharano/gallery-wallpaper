@@ -49,5 +49,5 @@
 	<string name="sync_title">Re-sync Interval</string>
 	<string name="sync_key">sync</string>
 	<string name="sync_summary">Time between database updates</string>
-	<string name="sync_default">10800000</string>
+	<string name="sync_default">10800000000</string>
 </resources>

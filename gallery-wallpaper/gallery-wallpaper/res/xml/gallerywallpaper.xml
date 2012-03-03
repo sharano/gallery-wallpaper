@@ -18,6 +18,6 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -->
 <wallpaper xmlns:android="http://schemas.android.com/apk/res/android"
-    android:settingsActivity="com.rkniner.gallerywall.GalleryWallpaperSettings"
+    android:settingsActivity="com.rkniner.gallerywallpaper.GalleryWallpaperSettings"
     android:thumbnail="@drawable/wallpaper">
 </wallpaper>

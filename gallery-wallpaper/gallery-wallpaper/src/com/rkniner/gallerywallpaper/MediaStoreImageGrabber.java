@@ -50,7 +50,6 @@ public class MediaStoreImageGrabber implements ImageGrabber {
 	
 	private void rebuildQuery() {
 		if (this.useSources) {
-			System.out.println("Rebuilding");
 			StringBuilder whereClause = new StringBuilder();
 			if (sources != null && sources.length > 0) {
 				whereClause = whereClause.append(MediaStore.Images.ImageColumns.DATA)
@@ -89,34 +88,35 @@ public class MediaStoreImageGrabber implements ImageGrabber {
 	public Bitmap getNextImage() {
 		Bitmap result = null;
 		if (this.useSources) {
-			System.out.println("Grabbing image");
 			for (int i = 0; i < 3; i++)
 				try {
-					int nextIndex = (int)(Math.random()
-							* (this.cursorExternal.getCount() + this.cursorInternal.getCount()));
-					if (nextIndex >= this.cursorExternal.getCount()) {
-						nextIndex -= this.cursorExternal.getCount();
-						this.cursorInternal.moveToFirst();
-						this.cursorInternal.move(nextIndex);
-						Uri uri = MediaStore.Images.Media.INTERNAL_CONTENT_URI
-								.buildUpon().appendPath(this.cursorInternal.getString(
-								this.cursorInternal.getColumnIndex(MediaStore.Images.ImageColumns._ID)))
-								.build();
-						result = MediaStore.Images.Media.getBitmap(
-								this.context.getContentResolver(),
-								uri);
-					} else {
-						this.cursorExternal.moveToFirst();
-						this.cursorExternal.move(nextIndex);
-						Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-								.buildUpon().appendPath(this.cursorExternal.getString(
-								this.cursorExternal.getColumnIndex(MediaStore.Images.ImageColumns._ID)))
-								.build();
-						result = MediaStore.Images.Media.getBitmap(
-								this.context.getContentResolver(),
-								uri);
+					if (this.cursorExternal != null && this.cursorInternal != null) {
+						int nextIndex = (int)(Math.random()
+								* (this.cursorExternal.getCount() + this.cursorInternal.getCount()));
+						if (nextIndex >= this.cursorExternal.getCount()) {
+							nextIndex -= this.cursorExternal.getCount();
+							this.cursorInternal.moveToFirst();
+							this.cursorInternal.move(nextIndex);
+							Uri uri = MediaStore.Images.Media.INTERNAL_CONTENT_URI
+									.buildUpon().appendPath(this.cursorInternal.getString(
+									this.cursorInternal.getColumnIndex(MediaStore.Images.ImageColumns._ID)))
+									.build();
+							result = MediaStore.Images.Media.getBitmap(
+									this.context.getContentResolver(),
+									uri);
+						} else {
+							this.cursorExternal.moveToFirst();
+							this.cursorExternal.move(nextIndex);
+							Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+									.buildUpon().appendPath(this.cursorExternal.getString(
+									this.cursorExternal.getColumnIndex(MediaStore.Images.ImageColumns._ID)))
+									.build();
+							result = MediaStore.Images.Media.getBitmap(
+									this.context.getContentResolver(),
+									uri);
+						}
+						if (result == null) continue;
 					}
-					if (result == null) continue;
 					break;
 				} catch (IOException e) {
 					continue;
@@ -137,6 +137,9 @@ public class MediaStoreImageGrabber implements ImageGrabber {
 				if (result == null) continue;
 				break;
 			}
+		}
+		if (result == null) {
+			result = BitmapFactory.decodeResource(context.getResources(), R.drawable.default_wallpaper);
 		}
 		return result;
 	}
@@ -171,7 +174,6 @@ public class MediaStoreImageGrabber implements ImageGrabber {
 	@Override
 	public boolean replaceImageSources(Uri... imagesources) {
 		ArrayList<Uri> newSources = new ArrayList<Uri>();
-		System.out.println("Replacing sources");
 		for (int i = 0; i < imagesources.length; i++) {
 			try {
 				newSources.add(imagesources[i]);

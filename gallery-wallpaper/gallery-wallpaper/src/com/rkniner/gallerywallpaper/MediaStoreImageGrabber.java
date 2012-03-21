@@ -39,6 +39,7 @@ public class MediaStoreImageGrabber implements ImageGrabber {
 	private Uri[] images;
 	private boolean useSources;
 	private Context context;
+	private boolean forceReload = true;
 	
 	public MediaStoreImageGrabber(Context c) {
 		this.setContext(c);
@@ -81,11 +82,13 @@ public class MediaStoreImageGrabber implements ImageGrabber {
 			cursorExternal = null;
 			cursorInternal = null;
 		}
+		forceReload = false;
 	}
 	
 	@Override
 	public Bitmap getNextImage() {
 		Bitmap result = null;
+		if (forceReload) this.refreshImageList();
 		if (this.useSources) {
 			for (int i = 0; i < 3; i++)
 				try {
@@ -117,6 +120,8 @@ public class MediaStoreImageGrabber implements ImageGrabber {
 						if (result == null) continue;
 					}
 					break;
+				} catch (OutOfMemoryError e) {
+					continue;
 				} catch (IOException e) {
 					continue;
 				}
@@ -139,6 +144,7 @@ public class MediaStoreImageGrabber implements ImageGrabber {
 		}
 		if (result == null) {
 			result = BitmapFactory.decodeResource(context.getResources(), R.drawable.default_wallpaper);
+			this.forceReload = true;
 		}
 		return result;
 	}

@@ -132,6 +132,7 @@ public class GalleryWallpaper extends WallpaperService {
 		private String errorMsg = "";
 		private int displayWidth = 0;
 		private int displayHeight = 0;
+		private boolean slideOpposite = false;
 		
 		private Paint backgroundPaint = new Paint();
 		private Paint textPaint = new Paint();
@@ -278,47 +279,59 @@ public class GalleryWallpaper extends WallpaperService {
 		private void rescaleImage() {
 			int dh = this.displayHeight;
             int dw = this.displayWidth;
+			float imgAspect = (float)(this.currentImage.getWidth())
+					/ (float)(this.currentImage.getHeight());
+			float screenAspect = (float)dw / (float)dh;
 			if (this.currentImage == null) {
 				int[] colors = {Color.BLACK};
 				Bitmap errImage = Bitmap.createBitmap(colors, 1, 1, Bitmap.Config.RGB_565);
 				this.currentImage =  Bitmap.createScaledBitmap(errImage, dw, dh, true);
 			}
+			this.slideOpposite = false;
 			if (this.xSteps == 1 && this.ySteps == 1) {
 				int scaleHeight = dh;
 				int scaleWidth = dw;
-				float aspect = (float)(this.currentImage.getWidth())
-						/ (float)(this.currentImage.getHeight());
-				if (aspect > (float)scaleWidth / (float)scaleHeight) {
-					scaleHeight = Math.round((float)scaleWidth / aspect); 
+				if (imgAspect > screenAspect) {
+					scaleHeight = Math.round((float)scaleWidth / imgAspect); 
 				} else {
-					scaleWidth = Math.round((float)scaleHeight * aspect);
+					scaleWidth = Math.round((float)scaleHeight * imgAspect);
 				}
 
 				this.currentImage = Bitmap.createScaledBitmap(this.currentImage,
 						scaleWidth, scaleHeight, true);
 			} else if (this.ySteps == 1) {
-				int scaleHeight = dh;
-				float aspect = (float)(this.currentImage.getWidth())
-						/ (float)(this.currentImage.getHeight());
-				int scaleWidth = Math.round((float)scaleHeight * aspect);
-				this.currentImage = Bitmap.createScaledBitmap(this.currentImage,
-						scaleWidth, scaleHeight, true);
+				if (imgAspect < screenAspect) {
+					int scaleWidth = dw;
+					int scaleHeight = Math.round((float)scaleWidth / imgAspect);
+					this.currentImage = Bitmap.createScaledBitmap(this.currentImage,
+							scaleWidth, scaleHeight, true);
+					this.slideOpposite = true;
+				} else {
+					int scaleHeight = dh;
+					int scaleWidth = Math.round((float)scaleHeight * imgAspect);
+					this.currentImage = Bitmap.createScaledBitmap(this.currentImage,
+							scaleWidth, scaleHeight, true);
+				}
 			} else if (this.xSteps == 1) {
-				int scaleWidth = dw;
-				float aspect = (float)(this.currentImage.getWidth())
-						/ (float)(this.currentImage.getHeight());
-				int scaleHeight = Math.round((float)scaleWidth / aspect);
-				this.currentImage = Bitmap.createScaledBitmap(this.currentImage,
-						scaleWidth, scaleHeight, true);
+				if (imgAspect > screenAspect) {
+					int scaleHeight = dh;
+					int scaleWidth = Math.round((float)scaleHeight * imgAspect);
+					this.currentImage = Bitmap.createScaledBitmap(this.currentImage,
+							scaleWidth, scaleHeight, true);
+					this.slideOpposite = true;
+				} else {
+					int scaleWidth = dw;
+					int scaleHeight = Math.round((float)scaleWidth / imgAspect);
+					this.currentImage = Bitmap.createScaledBitmap(this.currentImage,
+							scaleWidth, scaleHeight, true);
+				}
 			} else {
 				int scaleHeight = dh;
 				int scaleWidth = dw;
-				float aspect = (float)(this.currentImage.getWidth())
-						/ (float)(this.currentImage.getHeight());
-				if (aspect < (float)scaleWidth / (float)scaleHeight) {
-					scaleHeight = Math.round((float)scaleWidth / aspect); 
+				if (imgAspect < screenAspect) {
+					scaleHeight = Math.round((float)scaleWidth / imgAspect); 
 				} else {
-					scaleWidth = Math.round((float)scaleHeight * aspect);
+					scaleWidth = Math.round((float)scaleHeight * imgAspect);
 				}
 				this.currentImage = Bitmap.createScaledBitmap(this.currentImage,
 						scaleWidth, scaleHeight, true);
@@ -347,28 +360,30 @@ public class GalleryWallpaper extends WallpaperService {
                 				(dst.right - dst.left + r) / 2,
                 				(dst.bottom - dst.top + b) / 2);
                 		c.drawBitmap(this.currentImage, src, dst, this.backgroundPaint);
-                	} else if (this.xSteps == 1) {
+                	} else if ((this.xSteps == 1 && !this.slideOpposite)
+                			|| (this.ySteps == 1 && this.slideOpposite)) {
                 		dst = new Rect(
                 				(dst.right - dst.left - dw) / 2,
                 				(dst.bottom - dst.top - dh) / 2,
                 				(dst.right - dst.left + dw) / 2,
                 				(dst.bottom - dst.top + dh) / 2);
                 		int l = 0; 
-                		int t = Math.max(this.currentImage.getHeight() - dh, 0);
-                		t = Math.round((float)t * this.yPos);
+                		int t = this.currentImage.getHeight() - dh;
+                		t = Math.round((float)t * (this.slideOpposite? this.xPos: this.yPos));
                 		int r = l + this.currentImage.getWidth(); 
                 		int b = t + dh;
                 		Rect src = new Rect(l, t, r, b);
                 		c.drawBitmap(this.currentImage, src, dst, this.backgroundPaint);
-                	} else if (this.ySteps == 1) {
+                	} else if ((this.ySteps == 1 && !this.slideOpposite)
+                			|| (this.xSteps == 1 && this.slideOpposite)) {
                 		dst = new Rect(
                 				(dst.right - dst.left - dw) / 2,
                 				(dst.bottom - dst.top - dh) / 2,
                 				(dst.right - dst.left + dw) / 2,
                 				(dst.bottom - dst.top + dh) / 2);
-                		int l = Math.max(this.currentImage.getWidth() - dw, 0);
+                		int l = this.currentImage.getWidth() - dw;
                 		int t = 0;
-                		l = Math.round((float)l * this.xPos);
+                		l = Math.round((float)l * (this.slideOpposite? this.yPos: this.xPos));
                 		int r = l + dw; 
                 		int b = t + this.currentImage.getHeight();
                 		Rect src = new Rect(l, t, r, b);
@@ -379,8 +394,8 @@ public class GalleryWallpaper extends WallpaperService {
                 				(dst.bottom - dst.top - dh) / 2,
                 				(dst.right - dst.left + dw) / 2,
                 				(dst.bottom - dst.top + dh) / 2);
-                		int l = Math.max(this.currentImage.getWidth() - dst.right + dst.left, 0); 
-                		int t = Math.max(this.currentImage.getHeight() - dst.bottom + dst.top, 0);
+                		int l = this.currentImage.getWidth() - dst.right + dst.left; 
+                		int t = this.currentImage.getHeight() - dst.bottom + dst.top;
                 		l = Math.round((float)l * this.xPos);
                 		t = Math.round((float)t * this.yPos);
                 		int r = l + dw; 
@@ -477,8 +492,11 @@ public class GalleryWallpaper extends WallpaperService {
 				xStep = Math.round(1f / xOffsetStep) + 1;
 			if (yOffsetStep > 0)
 				yStep = Math.round(1f / yOffsetStep) + 1;
+			if (xOffsetStep == 1 && xOffset == 0.5)
+				xStep = 1;
+			if (yOffsetStep == 1 && yOffset == 0.5)
+				yStep = 1;
 			if (yStep != this.ySteps || xStep != this.xSteps) this.replaceRequired = true;
-			
 			synchronized (this) {
 				this.xSteps = xStep;
 				this.ySteps = yStep;

@@ -34,11 +34,11 @@
         <item >30 minutes</item>
     </string-array>
     <string-array name="replaceimage_values">
-        <item >60000000</item>
-        <item >300000000</item>
-        <item >600000000</item>
-        <item >900000000</item>
-        <item >1800000000</item>
+        <item >60000</item>
+        <item >300000</item>
+        <item >600000</item>
+        <item >900000</item>
+        <item >1800000</item>
     </string-array>
     <string-array name="sync_names">
         <item >15 minutes</item>
@@ -48,11 +48,11 @@
         <item >6 hours</item>
     </string-array>
     <string-array name="sync_values">
-        <item >900000000</item>
-        <item >1800000000</item>
-        <item >3600000000</item>
-        <item >10800000000</item>
-        <item >21600000000</item>
+        <item >900000</item>
+        <item >1800000</item>
+        <item >3600000</item>
+        <item >10800000</item>
+        <item >21600000</item>
     </string-array>
 
     

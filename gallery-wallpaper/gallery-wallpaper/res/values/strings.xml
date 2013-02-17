@@ -19,7 +19,7 @@
  -->
 <resources>
 	<string name="app_name">Gallery Wallpaper Slideshow</string>
-	<string name="wallpaper">Gallery Wallpaper</string>
+	<string name="app_desc">Show your gallery\'s images on your home screen!  Images scale to fill the entire display and slide as you scroll between each screen.</string><string name="wallpaper">Gallery Wallpaper</string><string name="wallpaper_desc">Show your gallery\'s images in a slideshow</string>
 	<string name="wallpaper_settings">Gallery Wallpaper Settings</string>
 	
 	<string name="preferences">Wallpaper Settings</string>
@@ -44,10 +44,13 @@
 	<string name="replaceimage_title">Update Interval</string>
 	<string name="replaceimage_key">replaceImage</string>
 	<string name="replaceimage_summary">Interval between image updates</string>
-	<string name="replaceimage_default">300000000</string>
+	<string name="replaceimage_default">300000</string>
 	
 	<string name="sync_title">Re-sync Interval</string>
 	<string name="sync_key">sync</string>
 	<string name="sync_summary">Time between database updates</string>
-	<string name="sync_default">10800000000</string>
+	<string name="sync_default">10800000</string>
+	
+	
+	
 </resources>

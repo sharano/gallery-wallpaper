@@ -53,9 +53,9 @@ public class GalleryWallpaper extends WallpaperService {
 	public static final String SHARED_PREFS_IMAGEDIRS_DEFAULT = "";
 
 	public static final String SHARED_PREFS_REPLACEIMAGE = "replaceImage";
-	public static final String SHARED_PREFS_REPLACEIMAGE_DEFAULT = "300000000";
+	public static final String SHARED_PREFS_REPLACEIMAGE_DEFAULT = "300000";
 	public static final String SHARED_PREFS_SYNC = "sync";
-	public static final String SHARED_PREFS_SYNC_DEFAULT = "10800000000";
+	public static final String SHARED_PREFS_SYNC_DEFAULT = "10800000";
 	
 	@Override
 	public WallpaperService.Engine onCreateEngine() {
@@ -528,15 +528,21 @@ public class GalleryWallpaper extends WallpaperService {
 					|| key.equals(GalleryWallpaper.SHARED_PREFS_IMAGESEARCH)
 					|| key.equals(GalleryWallpaper.SHARED_PREFS_IMAGELIST)) {
 				this.changedSearch = true;
+				this.syncRequired = true;
+				this.replaceRequired = true;
 			} else if (key.equals(GalleryWallpaper.SHARED_PREFS_REPLACEIMAGE)) {
 				this.refreshDelay = Long.valueOf(prefs.getString(
 						GalleryWallpaper.SHARED_PREFS_REPLACEIMAGE,
 						GalleryWallpaper.SHARED_PREFS_REPLACEIMAGE_DEFAULT));
+				this.replaceRequired = true;
 			} else if (key.equals(GalleryWallpaper.SHARED_PREFS_SYNC)) {
 				this.resyncDelay = Long.valueOf(prefs.getString(
 						GalleryWallpaper.SHARED_PREFS_SYNC,
 						GalleryWallpaper.SHARED_PREFS_SYNC_DEFAULT));
+				this.syncRequired = true;
+				this.replaceRequired = true;
 			}
+			this.redrawImage();
 		}
 		
 		private void updateSize() {

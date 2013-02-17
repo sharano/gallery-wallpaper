@@ -31,6 +31,7 @@ import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -45,9 +46,60 @@ public class GalleryPickerPreference extends DialogPreference {
 	
 	private int mode = 0;
 	
-	private ArrayList<CheckBox> checkboxes = new ArrayList<CheckBox>();
+	private ArrayList<CheckBoxChild> checkboxes = new ArrayList<CheckBoxChild>();
 	
 	private Handler handler = new Handler();
+	
+	class CheckBoxChild extends CheckBox {
+		public CheckBoxChild(Context c) {
+			super(c);
+			this.setOnCheckedChangeListener(clicked);
+		}
+		public CheckBox.OnCheckedChangeListener clicked = new CheckBox.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton me, boolean checked) {
+				String val = (String)me.getText();
+				String val2 = val + "/";
+				String[] valarr = val.split("\\/");
+				ArrayList<CheckBoxChild> checkboxes = GalleryPickerPreference.this.checkboxes;
+				if (checked) {
+					for (int i = 0; i < checkboxes.size(); i++) {
+						if (((String)checkboxes.get(i).getText()).indexOf(val2) == 0 &&
+								!checkboxes.get(i).getText().equals(val)) {
+							
+							if (!checkboxes.get(i).isChecked()) {
+								// It's a child, check it
+								checkboxes.get(i).setChecked(true);
+							}
+							
+							// Hide children, they're irrelevant
+							((TableRow)checkboxes.get(i).getParent()).setVisibility(View.GONE);
+						}
+					}
+				} else {
+					for (int i = checkboxes.size() - 1; i >= 0; i--) {
+						if (val.indexOf(((String)checkboxes.get(i).getText()) + "/") == 0 &&
+								!checkboxes.get(i).getText().equals(val) &&
+								checkboxes.get(i).isChecked()) {
+							// It's a parent, clear it
+							checkboxes.get(i).setChecked(false);
+						}
+					}
+					for (int i = 0; i < checkboxes.size(); i++) {
+						if (((String)checkboxes.get(i).getText()).indexOf(val2) == 0 &&
+								!checkboxes.get(i).getText().equals(val)) {
+							if (checkboxes.get(i).getText().toString().split("\\/").length
+									== valarr.length + 1) {
+								// It's a child, show it
+								((TableRow)checkboxes.get(i).getParent()).setVisibility(View.VISIBLE);
+							}
+						}
+					}
+				}
+			}
+		};
+	}
 	
 	class ThumbnailLoader implements Runnable {
 		private ImageView iv;
@@ -87,7 +139,7 @@ public class GalleryPickerPreference extends DialogPreference {
 			h.post(thread);
 			result.addView(image);
 			
-			CheckBox check = new CheckBox(getContext());
+			CheckBoxChild check = new CheckBoxChild(getContext());
 			check.setText(value);
 			check.setChecked(false);
 			for (int i = 0; i < valuesSelected.length; i++) {
@@ -145,6 +197,7 @@ public class GalleryPickerPreference extends DialogPreference {
 						GalleryWallpaper.SHARED_PREFS_IMAGEDIRS_DEFAULT);
 				String[] imagedirsarr =  GalleryWallpaper.getCSVRow(dirs);
 				String lastDir = "";
+				ArrayList<String> nested = new ArrayList<String>();
 				for (int i = 0; i < cursors.length; i++) {
 					while (cursors[i].moveToNext()) {
 						String dir = cursors[i].getString(
@@ -153,7 +206,27 @@ public class GalleryPickerPreference extends DialogPreference {
 						String id = cursors[i].getString(
 								cursors[i].getColumnIndex(MediaStore.Images.ImageColumns._ID));
 						if (!dir.equals(lastDir)) {
-							boxes.add(newEntry(dir, imagedirsarr, id));
+							String[] folders = dir.split("\\/");
+							StringBuilder thisFolder = new StringBuilder();
+							for (int j = 0; j < folders.length; j++) {
+								if (j >= nested.size()) {
+									nested.add(folders[j]);
+									if (j > 0)
+										thisFolder.append("/").append(folders[j]);
+									boxes.add(newEntry(thisFolder.toString(), imagedirsarr, id));
+								} else if (!folders[j].equals(nested.get(j))) {
+									for (int k = nested.size() - 1; k >= j; k--) {
+										nested.remove(k);
+									}
+									nested.add(folders[j]);
+									thisFolder = new StringBuilder();
+									for (int k = 1; k <= j; k++) {
+										thisFolder.append("/").append(folders[k]);
+									}
+									boxes.add(newEntry(thisFolder.toString(), imagedirsarr, id));
+								}
+							}
+							//boxes.add(newEntry(dir, imagedirsarr, id));
 							lastDir = dir;
 						}
 					}
@@ -162,6 +235,11 @@ public class GalleryPickerPreference extends DialogPreference {
 			}
 			cursors[0].close();
 			cursors[1].close();
+			Iterator<CheckBoxChild> checkI = GalleryPickerPreference.this.checkboxes.iterator();
+			while (checkI.hasNext()) {
+				CheckBoxChild check = checkI.next();
+				check.clicked.onCheckedChanged(check, check.isChecked());
+			}
 			Iterator<TableRow> boxI = boxes.iterator();
 			while (boxI.hasNext()) {
 				TableRow r = boxI.next();
@@ -194,11 +272,24 @@ public class GalleryPickerPreference extends DialogPreference {
 	protected void onDialogClosed(boolean positiveResult) {
 		if (positiveResult) {
 			ArrayList<String> paths = new ArrayList<String>();
-			Iterator<CheckBox> i = checkboxes.iterator();
+			Iterator<CheckBoxChild> i = checkboxes.iterator();
 			while (i.hasNext()) {
 				CheckBox c = i.next();
-				if (c.isChecked())
-					paths.add(c.getText().toString());
+				if (c.isChecked()) {
+					String val = c.getText().toString();
+					Iterator<CheckBoxChild> j = checkboxes.iterator();
+					boolean found = false;
+					while (j.hasNext()) {
+						CheckBox c2 = j.next();
+						if (c2 == c) break;
+						if (val.indexOf(c2.getText().toString() + "/") == 0 && c2.isChecked()) {
+							found = true;
+							break;
+						}
+					}
+					if (!found)
+						paths.add(val);	
+				}
 			}
 			String[] patharr = new String[paths.size()];
 			String result = GalleryWallpaper.getCSVRow(paths.toArray(patharr));
